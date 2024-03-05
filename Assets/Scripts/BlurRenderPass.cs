@@ -13,7 +13,6 @@ public class BlurRenderPass : ScriptableRenderPass
 
     public bool Setup(ScriptableRenderer renderer)
     {
-        source = renderer.cameraColorTarget;
         blurSettings = VolumeManager.instance.stack.GetComponent<BlurSettings>();
         renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing;
 
@@ -39,6 +38,12 @@ public class BlurRenderPass : ScriptableRenderPass
         cmd.GetTemporaryRT(blurTex.id, cameraTextureDescriptor);
 
         base.Configure(cmd, cameraTextureDescriptor);
+    }
+
+    public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
+    {
+        base.OnCameraSetup(cmd, ref renderingData);
+        source = renderingData.cameraData.renderer.cameraColorTarget;
     }
 
     public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
